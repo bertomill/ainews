@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>AI News</h1>
+    </header>
+    <div class="container">
+        <div class="grid">
+            {% for article in articles %}
+            <div class="grid-item {% if loop.index <= 2 %}large{% else %}small{% endif %}">
+                {% if article.urlToImage %}
+                <img src="{{ article.urlToImage }}" alt="{{ article.title }}">
+                {% endif %}
+                <a href="{{ article.url }}" target="_blank"><h2>{{ article.title }}</h2></a>
+                <p class="description">{{ article.description }}</p>
+                <p class="meta">
+                    <strong>Source:</strong> {{ article.source.name }}<br>
+                    <strong>Author:</strong> {{ article.author }}<br>
+                    <strong>Published At:</strong> {{ article.publishedAt }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

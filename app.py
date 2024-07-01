@@ -1,6 +1,6 @@
 # app.py
 
-from flask import Flask, render_template_string
+from flask import Flask, render_template
 import os
 import logging
 import requests
@@ -17,6 +17,14 @@ logger = logging.getLogger(__name__)
 
 NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 
+def is_valid_article(article):
+    return (
+        article.get('title') and 
+        article.get('description') and 
+        article.get('urlToImage') and 
+        'removed' not in article.get('title').lower()
+    )
+
 @app.route('/')
 def home():
     try:
@@ -29,102 +37,12 @@ def home():
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
+        valid_articles = [article for article in articles if is_valid_article(article)]
 
-        # Log the number of articles fetched
-        logger.info("Number of articles fetched: %d", len(articles))
+        # Log the number of valid articles fetched
+        logger.info("Number of valid articles fetched: %d", len(valid_articles))
 
-        # HTML template with basic styling
-        template = '''
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>AI News</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    margin: 0;
-                    padding: 0;
-                    background-color: #f4f4f4;
-                }
-                .container {
-                    width: 80%;
-                    margin: auto;
-                    overflow: hidden;
-                }
-                header {
-                    background: #333;
-                    color: #fff;
-                    padding-top: 30px;
-                    min-height: 70px;
-                    border-bottom: #0779e4 3px solid;
-                }
-                header h1 {
-                    text-align: center;
-                    text-transform: uppercase;
-                    margin: 0;
-                    font-size: 24px;
-                }
-                ul {
-                    list-style: none;
-                    padding: 0;
-                }
-                li {
-                    background: #fff;
-                    margin: 20px 0;
-                    padding: 20px;
-                    border-radius: 5px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-                li img {
-                    max-width: 100%;
-                    height: auto;
-                    display: block;
-                }
-                li a {
-                    color: #333;
-                    text-decoration: none;
-                }
-                li a:hover {
-                    color: #0779e4;
-                }
-                .description {
-                    margin: 10px 0;
-                }
-                .meta {
-                    color: #666;
-                    font-size: 12px;
-                }
-            </style>
-        </head>
-        <body>
-            <header>
-                <h1>AI News</h1>
-            </header>
-            <div class="container">
-                <ul>
-                    {% for article in articles %}
-                    <li>
-                        {% if article.urlToImage %}
-                        <img src="{{ article.urlToImage }}" alt="{{ article.title }}">
-                        {% endif %}
-                        <a href="{{ article.url }}" target="_blank"><h2>{{ article.title }}</h2></a>
-                        <p class="description">{{ article.description }}</p>
-                        <p class="meta">
-                            <strong>Source:</strong> {{ article.source.name }}<br>
-                            <strong>Author:</strong> {{ article.author }}<br>
-                            <strong>Published At:</strong> {{ article.publishedAt }}
-                        </p>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </body>
-        </html>
-        '''
-        return render_template_string(template, articles=articles)
+        return render_template('index.html', articles=valid_articles)
     except requests.RequestException as e:
         logger.error("Error fetching news: %s", e)
         return "An error occurred while fetching news", 500
