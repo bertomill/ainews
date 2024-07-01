@@ -19,15 +19,19 @@ NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 
 @app.route('/')
 def home():
-    return "Hello, World!"
-
-@app.route('/news')
-def get_news():
     try:
+        if not NEWS_API_KEY:
+            logger.error("NEWS_API_KEY is not set")
+            return "NEWS_API_KEY is not set", 500
+        
         url = f'https://newsapi.org/v2/everything?q=ai&apiKey={NEWS_API_KEY}'
+        logger.info("Fetching news from URL: %s", url)
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
+
+        # Log the number of articles fetched
+        logger.info("Number of articles fetched: %d", len(articles))
 
         # Simple HTML template
         template = '''
