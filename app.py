@@ -1,6 +1,6 @@
 # app.py
 
-from flask import Flask, jsonify
+from flask import Flask, render_template_string
 import os
 import logging
 import requests
@@ -19,11 +19,7 @@ NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 
 @app.route('/')
 def home():
-    try:
-        return "Hello, World!"
-    except Exception as e:
-        logger.error("Error in home route: %s", e)
-        return "An error occurred", 500
+    return "Hello, World!"
 
 @app.route('/news')
 def get_news():
@@ -32,7 +28,30 @@ def get_news():
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
-        return jsonify(articles)
+
+        # Simple HTML template
+        template = '''
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>AI News</title>
+        </head>
+        <body>
+            <h1>AI News</h1>
+            <ul>
+                {% for article in articles %}
+                <li>
+                    <a href="{{ article.url }}" target="_blank">{{ article.title }}</a><br>
+                    <p>{{ article.description }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </body>
+        </html>
+        '''
+        return render_template_string(template, articles=articles)
     except requests.RequestException as e:
         logger.error("Error fetching news: %s", e)
         return "An error occurred while fetching news", 500
