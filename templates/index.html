@@ -5,12 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI News</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        #chat-container {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        #chat-form {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #chat-output {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+        }
+        .chat-message.user {
+            font-weight: bold;
+        }
+        .chat-message.bot {
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>AI News</h1>
     </header>
     <div class="container">
+        <div id="chat-container">
+            <h2>Chat with AI</h2>
+            <form id="chat-form">
+                <input type="text" id="chat-input" placeholder="Type your message here...">
+                <button type="submit">Send</button>
+            </form>
+            <div id="chat-output"></div>
+        </div>
         <div class="grid">
             {% for article in articles %}
             <div class="grid-item {% if loop.index <= 2 %}large{% else %}small{% endif %}">
@@ -28,5 +68,6 @@
             {% endfor %}
         </div>
     </div>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
 </body>
 </html>
