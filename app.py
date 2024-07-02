@@ -72,5 +72,5 @@ def chat():
         logger.error("Error during OpenAI API call: %s", e)
         return jsonify({"response": "An error occurred while processing your request."}), 500
 
-if __name__ == '__main__':
+if __name__ != "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
