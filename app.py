@@ -17,6 +17,10 @@ logger = logging.getLogger(__name__)
 NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
+if not NEWS_API_KEY or not OPENAI_API_KEY:
+    logger.error("Environment variables NEWS_API_KEY or OPENAI_API_KEY are not set.")
+    raise ValueError("Environment variables NEWS_API_KEY or OPENAI_API_KEY are not set.")
+
 client = OpenAI(
     api_key=OPENAI_API_KEY,
 )
