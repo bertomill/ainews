@@ -5,15 +5,16 @@ import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 
-app = Flask(__name__)
-
-# Load environment variables from .env file
+# Load environment variables from .env file if it exists
 load_dotenv()
+
+app = Flask(__name__)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Load environment variables from Vercel
 NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
@@ -21,6 +22,7 @@ if not NEWS_API_KEY or not OPENAI_API_KEY:
     logger.error("Environment variables NEWS_API_KEY or OPENAI_API_KEY are not set.")
     raise ValueError("Environment variables NEWS_API_KEY or OPENAI_API_KEY are not set.")
 
+# Initialize OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 def is_valid_article(article):
@@ -57,18 +59,19 @@ def home():
 def chat():
     user_message = request.json.get("message")
     try:
-        response = client.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": user_message}
             ]
         )
-        chat_response = response.choices[0].message["content"].strip()
+        chat_response = response.choices[0].message.content.strip()
         return jsonify({"response": chat_response})
     except Exception as e:
         logger.error("Error during OpenAI API call: %s", e)
         return jsonify({"response": "An error occurred while processing your request."}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
