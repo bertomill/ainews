@@ -3,45 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI News</title>
+    <title>AI Lense</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        #chat-container {
-            margin-bottom: 20px;
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-        }
-        #chat-form {
-            display: flex;
-            margin-bottom: 10px;
-        }
-        #chat-input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-        }
-        #chat-output {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background: #f9f9f9;
-        }
-        .chat-message {
-            margin-bottom: 10px;
-        }
-        .chat-message.user {
-            font-weight: bold;
-        }
-        .chat-message.bot {
-            color: #007bff;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>AI News</h1>
-    </header>
+    {% include 'header.html' %}
     <div class="container">
         <div id="chat-container">
             <h2>Chat with AI</h2>
@@ -68,6 +36,9 @@
             {% endfor %}
         </div>
     </div>
+    <footer>
+        <p>&copy; 2024 AI Lense. All rights reserved.</p>
+    </footer>
     <script src="{{ url_for('static', filename='chat.js') }}"></script>
 </body>
 </html>
