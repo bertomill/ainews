@@ -3,112 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Lense</title>
+    <title>AI Lens</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assistant.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Add styles for the navigation bar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #202124;
-            padding: 10px 20px;
-            color: white;
-        }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            cursor: pointer;
-        }
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-        .search-container {
-            display: flex;
-            align-items: center;
-        }
-        .search-container input[type="text"] {
-            padding: 5px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 3px;
-        }
-        .search-container button {
-            padding: 5px 10px;
-            background-color: #4285F4;
-            border: none;
-            color: white;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .search-container button:hover {
-            background-color: #357ae8;
-        }
-        .prompts-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .prompt {
-            padding: 20px;
-            background-color: #333;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            width: 200px;
-        }
-        .prompt:hover {
-            background-color: #444;
-        }
-        .response-container {
-            margin: 20px;
-            padding: 20px;
-            background-color: #f1f1f1;
-            border-radius: 10px;
-            display: none;
-        }
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .grid-item {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            width: 300px;
-            padding: 10px;
-            text-align: left;
-        }
-        .grid-item img {
-            width: 100%;
-            height: auto;
-        }
-        .grid-item h2 {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        .grid-item .description {
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-        .grid-item .meta {
-            font-size: 0.8em;
-            color: #555;
-        }
-    </style>
 </head>
 <body>
-    {% include 'header.html' %}
-    <div class="navbar">
-        <div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>AI Lens</h2>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-query" placeholder="Search for topics, locations & sources">
+            <button onclick="searchArticles()">Search</button>
+        </div>
+        <div class="sidebar-links">
             <a onclick="fetchArticlesByTopic('home')">Home</a>
             <a onclick="fetchArticlesByTopic('ai')">AI</a>
             <a onclick="fetchArticlesByTopic('machine learning')">Machine Learning</a>
@@ -117,72 +29,60 @@
             <a onclick="fetchArticlesByTopic('robotics')">Robotics</a>
             <a onclick="fetchArticlesByTopic('automation')">Automation</a>
         </div>
-        <div class="search-container">
-            <input type="text" id="search-query" placeholder="Search for topics, locations & sources">
-            <button onclick="searchArticles()">Search</button>
+        <a href="#" onclick="toggleNotes()" class="view-notes-btn">View Notes</a>
+    </div>
+    <div id="notes-column" class="notes-column">
+        <div class="notes-list">
+            <h2>My Notes</h2>
+            <!-- This will be populated dynamically -->
         </div>
     </div>
-    <div class="prompts-container">
-        <div class="prompt" onclick="handlePrompt('summarize major AI headlines for the day')">Summarize AI Headlines</div>
-        <div class="prompt" onclick="handlePrompt('latest developments in machine learning')">Latest in Machine Learning</div>
-        <div class="prompt" onclick="handlePrompt('what is the newest trend in data science')">Newest in Data Science</div>
-        <div class="prompt" onclick="handlePrompt('how is robotics evolving this year')">Robotics Trends</div>
-    </div>
-    <div class="container">
-        <div class="response-container" id="response-container"></div>
-        <div class="grid" id="articles-container">
-            {% for article in articles %}
-            <div class="grid-item">
-                {% if article.urlToImage %}
-                <img src="{{ article.urlToImage }}" alt="{{ article.title }}">
-                {% endif %}
-                <a href="{{ article.url }}" target="_blank"><h2>{{ article.title }}</h2></a>
-                <p class="description">{{ article.description }}</p>
-                <p class="meta">
-                    <strong>Source:</strong> {{ article.source.name }}<br>
-                    <strong>Author:</strong> {{ article.author }}<br>
-                    <strong>Published At:</strong> {{ article.publishedAt }}
-                </p>
+    <div class="main-content">
+        <div class="container">
+            <div class="grid" id="articles-container">
+                {% for article in articles %}
+                <div class="grid-item">
+                    {% if article.urlToImage %}
+                    <img src="{{ article.urlToImage }}" alt="{{ article.title }}">
+                    {% endif %}
+                    <div class="article-header">
+                        <a href="{{ article.url }}" target="_blank"><h2>{{ article.title }}</h2></a>
+                        <button onclick="openNoteModal('{{ article.title }}')" class="note-btn"><i class="fas fa-pencil-alt"></i></button>
+                    </div>
+                    <p class="description">{{ article.description }}</p>
+                    <p class="meta">
+                        <strong>Source:</strong> {{ article.source.name }}<br>
+                        <strong>Author:</strong> {{ article.author }}<br>
+                        <strong>Published At:</strong> {{ article.publishedAt }}
+                    </p>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
-    <footer>
-        <p>&copy; 2024 AI Lense. All rights reserved.</p>
-    </footer>
+    <button onclick="openAssistant()" class="open-assistant-btn">AI Assistant</button>
+    {% include 'ai_assistant.html' %}
+
+    <!-- Note Modal -->
+    <div id="note-modal" class="note-modal">
+        <div class="note-content">
+            <span onclick="closeNoteModal()" class="close">&times;</span>
+            <h2 id="note-title"></h2>
+            <textarea id="note-text" rows="10" placeholder="Write your notes here..."></textarea>
+            <button onclick="saveNote()" class="save-note-btn">Save Note</button>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='chat.js') }}"></script>
     <script>
-        async function fetchArticlesByTopic(topic) {
-            const response = await fetch(`/search?query=${topic}`);
-            const articles = await response.json();
-            displayArticles(articles);
+        function openAssistant() {
+            const assistant = document.getElementById('ai-assistant');
+            assistant.style.right = '0';
         }
 
-        async function searchArticles() {
-            const query = document.getElementById('search-query').value;
-            const response = await fetch(`/search?query=${query}`);
-            const articles = await response.json();
-            displayArticles(articles);
-        }
-
-        function displayArticles(articles) {
-            const articlesContainer = document.getElementById('articles-container');
-            articlesContainer.innerHTML = '';
-            articles.forEach(article => {
-                const articleElement = document.createElement('div');
-                articleElement.classList.add('grid-item');
-                articleElement.innerHTML = `
-                    ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}">` : ''}
-                    <a href="${article.url}" target="_blank"><h2>${article.title}</h2></a>
-                    <p class="description">${article.description}</p>
-                    <p class="meta">
-                        <strong>Source:</strong> ${article.source.name}<br>
-                        <strong>Author:</strong> ${article.author}<br>
-                        <strong>Published At:</strong> ${article.publishedAt}
-                    </p>
-                `;
-                articlesContainer.appendChild(articleElement);
-            });
+        function closeAssistant() {
+            const assistant = document.getElementById('ai-assistant');
+            assistant.style.right = '-100%';
         }
 
         async function handlePrompt(prompt) {
@@ -196,10 +96,61 @@
             const data = await response.json();
             const chatResponse = data.response;
 
-            // Display the response in the response container
-            const responseContainer = document.getElementById('response-container');
-            responseContainer.style.display = 'block';
-            responseContainer.innerHTML = `<p>${chatResponse}</p>`;
+            const responseContainer = document.getElementById('ai-output');
+            responseContainer.innerHTML = `<p class="chat-message bot">${chatResponse}</p>` + responseContainer.innerHTML;
+            responseContainer.scrollTop = responseContainer.scrollHeight;
+        }
+
+        document.getElementById('ai-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const aiInput = document.getElementById('ai-input');
+            const prompt = aiInput.value;
+            aiInput.value = '';
+            const responseContainer = document.getElementById('ai-output');
+            responseContainer.innerHTML = `<p class="chat-message user">${prompt}</p>` + responseContainer.innerHTML;
+            responseContainer.scrollTop = responseContainer.scrollHeight;
+            handlePrompt(prompt);
+        });
+
+        function toggleNotes() {
+            const notesColumn = document.getElementById('notes-column');
+            const mainContent = document.querySelector('.main-content');
+            if (notesColumn.style.transform === 'translateX(0px)') {
+                notesColumn.style.transform = 'translateX(-100%)';
+                mainContent.style.marginLeft = '250px'; /* Reset to initial margin */
+            } else {
+                notesColumn.style.transform = 'translateX(0px)';
+                mainContent.style.marginLeft = '550px'; /* Adjust according to the notes column width */
+            }
+        }
+
+        function openNoteModal(title) {
+            document.getElementById('note-title').innerText = `Notes for: ${title}`;
+            const noteModal = document.getElementById('note-modal');
+            noteModal.style.display = 'block';
+        }
+
+        function closeNoteModal() {
+            const noteModal = document.getElementById('note-modal');
+            noteModal.style.display = 'none';
+        }
+
+        async function saveNote() {
+            const title = document.getElementById('note-title').innerText.replace('Notes for: ', '');
+            const noteText = document.getElementById('note-text').value;
+            const response = await fetch('/save_note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, note: noteText })
+            });
+            if (response.ok) {
+                alert('Note saved successfully!');
+                closeNoteModal();
+            } else {
+                alert('Failed to save note.');
+            }
         }
     </script>
 </body>
