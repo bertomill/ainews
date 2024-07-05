@@ -1,5 +1,18 @@
 /* style.css */
 
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #121212; /* Example background color */
+    color: #ffffff; /* Example text color */
+}
+
 /* General Styles */
 body {
     font-family: 'Montserrat', sans-serif;
@@ -137,16 +150,17 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+    background-color: #007bff; /* Primary color */
+    color: #ffffff; /* White text */
     padding: 10px 20px;
+    border: none;
     border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    font-size: 1em;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    font-size: 1.2em;
+    z-index: 1000; /* Ensure it's above other elements */
 }
+
 
 .open-assistant-btn:hover {
     background-color: #0056b3;
@@ -232,3 +246,4 @@ body {
 .save-note-btn:hover {
     background-color: #0056b3;
 }
+
