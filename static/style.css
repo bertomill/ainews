@@ -27,7 +27,7 @@ body {
 .container {
     width: 100%;
     margin: auto;
-    padding: 20px;
+    padding: 10px;
 }
 
 .main-content {
@@ -174,7 +174,7 @@ body {
     bottom: 0;
     width: 300px;
     background: #1e1e1e;
-    padding: 20px;
+    padding: 10px;
     border-left: 1px solid #333;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     transform: translateX(-100%);
@@ -248,6 +248,21 @@ body {
 }
 
 /* Notes Container */
+.notes-column {
+    width: 400px; /* Adjust the width as needed */
+    transform: translateX(-400px); /* Ensure it matches the width */
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-content {
+    margin-left: 400px; /* Adjust according to the notes-column width */
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.notes-column.open {
+    transform: translateX(0);
+}
+
 .notes-container {
     padding: 20px;
     background-color: #121212; /* Example background color */
@@ -256,12 +271,13 @@ body {
 
 .note {
     background-color: #333333;
-    padding: 15px;
+    padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
 }
 
 .note h3 {
+    font-size: 0.8em; /* Adjust the font size as needed */
     margin-bottom: 10px;
 }
 

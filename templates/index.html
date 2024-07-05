@@ -16,18 +16,18 @@
         </div>
         <div class="search-container">
             <input type="text" id="search-query" placeholder="Search for topics, locations & sources">
-            <button onclick="searchArticles()">Search</button>
+            <button id="search-button">Search</button>
         </div>
         <div class="sidebar-links">
-            <a onclick="fetchArticlesByTopic('home')">Home</a>
-            <a onclick="fetchArticlesByTopic('ai')">AI</a>
-            <a onclick="fetchArticlesByTopic('machine learning')">Machine Learning</a>
-            <a onclick="fetchArticlesByTopic('deep learning')">Deep Learning</a>
-            <a onclick="fetchArticlesByTopic('data science')">Data Science</a>
-            <a onclick="fetchArticlesByTopic('robotics')">Robotics</a>
-            <a onclick="fetchArticlesByTopic('automation')">Automation</a>
+            <a href="#" data-topic="home">Home</a>
+            <a href="#" data-topic="finance">Finance</a>
+            <a href="#" data-topic="regulation">Regulation</a>
+            <a href="#" data-topic="healthcare">Healthcare</a>
+            <a href="#" data-topic="big tech">Big Tech</a>
+            <a href="#" data-topic="construction">Construction</a>
+            <a href="#" data-topic="automotive">Automotive</a>
         </div>
-        <a href="#" onclick="toggleNotes()" class="view-notes-btn">View Notes</a>
+        <a href="#" id="view-notes-btn" class="view-notes-btn">View Notes</a>
     </div>
     <div id="notes-column" class="notes-column">
         <div id="notes-column" class="notes-column">
@@ -79,7 +79,7 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
     <script>
         function openAssistant() {
             const assistant = document.getElementById('ai-assistant');

@@ -80,7 +80,6 @@ def save_note():
     connection.close()
     return jsonify({"message": "Note saved successfully!"})
 
-
 @app.route('/notes')
 def view_notes():
     connection = get_db_connection()
@@ -88,6 +87,31 @@ def view_notes():
     connection.close()
     return render_template('notes.html', notes=notes)
 
+@app.route('/api/articles', methods=['GET'])
+def get_articles():
+    topic = request.args.get('topic', 'ai')  # Default to 'ai' if no topic provided
+    try:
+        url = f'https://newsapi.org/v2/everything?q={topic}&apiKey={NEWS_API_KEY}'
+        response = requests.get(url)
+        response.raise_for_status()
+        articles = response.json().get('articles', [])
+        return jsonify([article for article in articles if article.get('title') and article.get('description')])
+    except requests.RequestException as e:
+        logger.error("Error fetching articles: %s", e)
+        return jsonify({"error": "An error occurred while fetching articles"}), 500
+
+@app.route('/api/search', methods=['GET'])
+def search_articles():
+    query = request.args.get('query', '')
+    try:
+        url = f'https://newsapi.org/v2/everything?q={query}&apiKey={NEWS_API_KEY}'
+        response = requests.get(url)
+        response.raise_for_status()
+        articles = response.json().get('articles', [])
+        return jsonify([article for article in articles if article.get('title') and article.get('description')])
+    except requests.RequestException as e:
+        logger.error("Error searching articles: %s", e)
+        return jsonify({"error": "An error occurred while searching for articles"}), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8080))
