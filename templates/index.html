@@ -30,10 +30,18 @@
         <a href="#" onclick="toggleNotes()" class="view-notes-btn">View Notes</a>
     </div>
     <div id="notes-column" class="notes-column">
-        <div class="notes-list">
-            <h2>My Notes</h2>
-            <!-- This will be populated dynamically -->
+        <div id="notes-column" class="notes-column">
+            <div class="notes-list">
+                <h2>My Notes</h2>
+                {% for note in notes %}
+                <div class="note">
+                    <h3>{{ note.title }}</h3>
+                    <p>{{ note.note }}</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
+        
     </div>
     <div class="main-content">
         <div class="container">

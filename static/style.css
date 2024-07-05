@@ -115,6 +115,7 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
 .note-btn {
     position: absolute;
     top: 10px;
@@ -160,7 +161,6 @@ body {
     font-size: 1.2em;
     z-index: 1000; /* Ensure it's above other elements */
 }
-
 
 .open-assistant-btn:hover {
     background-color: #0056b3;
@@ -247,3 +247,24 @@ body {
     background-color: #0056b3;
 }
 
+/* Notes Container */
+.notes-container {
+    padding: 20px;
+    background-color: #121212; /* Example background color */
+    color: #ffffff; /* Example text color */
+}
+
+.note {
+    background-color: #333333;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.note h3 {
+    margin-bottom: 10px;
+}
+
+.note p {
+    margin: 0;
+}

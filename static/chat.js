@@ -1,39 +1,44 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-    const chatOutput = document.getElementById('chat-output');
+    const saveNoteButton = document.querySelector('.save-note-btn');
+    const notesColumn = document.getElementById('notes-column');
 
-    if (chatForm && chatInput && chatOutput) {
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Function to fetch and display notes
+    function fetchNotes() {
+        fetch('/notes')
+            .then(response => response.text())
+            .then(data => {
+                notesColumn.innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
 
-            const userMessage = chatInput.value;
-            chatInput.value = '';
+    // Save note button event listener
+    if (saveNoteButton) {
+        saveNoteButton.addEventListener('click', function() {
+            const noteTitle = document.getElementById('note-title').innerText.replace('Notes for: ', '');
+            const noteText = document.getElementById('note-text').value;
 
-            const userMessageElement = document.createElement('div');
-            userMessageElement.textContent = `You: ${userMessage}`;
-            userMessageElement.classList.add('chat-message', 'user');
-            chatOutput.appendChild(userMessageElement);
-
-            fetch('/chat', {
+            fetch('/save_note', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: userMessage })
+                body: JSON.stringify({ title: noteTitle, note: noteText })
             })
             .then(response => response.json())
             .then(data => {
-                const botMessageElement = document.createElement('div');
-                botMessageElement.textContent = `ChatGPT: ${data.response}`;
-                botMessageElement.classList.add('chat-message', 'bot');
-                chatOutput.appendChild(botMessageElement);
+                alert('Note saved successfully!');
+                closeNoteModal();
+                fetchNotes(); // Fetch and display notes after saving
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         });
-    } else {
-        console.error('Chat form, input, or output not found.');
     }
+
+    // Fetch notes on page load
+    fetchNotes();
 });

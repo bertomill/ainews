@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes - AI Lense</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>My Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assistant.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    {% include 'header.html' %}
     <div class="container">
         <h2>My Notes</h2>
-        <div class="notes-container">
+        <div id="notes-list">
             {% for note in notes %}
-            <div class="note-item">
+            <div class="note">
                 <h3>{{ note.title }}</h3>
                 <p>{{ note.note }}</p>
             </div>
             {% endfor %}
         </div>
     </div>
-    <footer>
-        <p>&copy; 2024 AI Lense. All rights reserved.</p>
-    </footer>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
 </body>
 </html>

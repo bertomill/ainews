@@ -4,11 +4,12 @@ import logging
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+import sqlite3
 
 # Load environment variables from .env file if it exists
 load_dotenv()
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -25,15 +26,10 @@ if not NEWS_API_KEY or not OPENAI_API_KEY:
 # Initialize OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-notes = []
-
-def is_valid_article(article):
-    return (
-        article.get('title') and 
-        article.get('description') and 
-        article.get('urlToImage') and 
-        'removed' not in article.get('title').lower()
-    )
+def get_db_connection():
+    connection = sqlite3.connect('notes.db')
+    connection.row_factory = sqlite3.Row
+    return connection
 
 @app.route('/')
 def home():
@@ -47,7 +43,7 @@ def home():
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
-        valid_articles = [article for article in articles if is_valid_article(article)]
+        valid_articles = [article for article in articles if article.get('title') and article.get('description')]
 
         # Log the number of valid articles fetched
         logger.info("Number of valid articles fetched: %d", len(valid_articles))
@@ -77,12 +73,21 @@ def chat():
 @app.route('/save_note', methods=['POST'])
 def save_note():
     note_data = request.json
-    notes.append(note_data)
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO notes (title, note) VALUES (?, ?)', (note_data['title'], note_data['note']))
+    connection.commit()
+    connection.close()
     return jsonify({"message": "Note saved successfully!"})
+
 
 @app.route('/notes')
 def view_notes():
+    connection = get_db_connection()
+    notes = connection.execute('SELECT * FROM notes').fetchall()
+    connection.close()
     return render_template('notes.html', notes=notes)
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8080))
