@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
 import os
 import logging
 import requests
@@ -55,7 +55,11 @@ def home():
         # Log the number of valid articles fetched
         logger.info("Number of valid articles fetched: %d", len(valid_articles))
 
-        return render_template('index.html', articles=valid_articles)
+        response = make_response(render_template('index.html', articles=valid_articles))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     except requests.RequestException as e:
         logger.error("Error fetching news: %s", e)
         return "An error occurred while fetching news", 500
