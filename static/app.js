@@ -39,7 +39,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button class="note-btn" data-title="${article.title}">✏️</button>
                         </div>
                         ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}">` : ''}
-                        <p>${article.description}</p>
+                        <p class="description">${article.description}</p>
+                        <p class="meta">
+                            <strong>Source:</strong> ${article.source.name}<br>
+                            <strong>Author:</strong> ${article.author}<br>
+                            <strong>Published At:</strong> ${article.publishedAt}
+                        </p>
                         <p><a href="${article.url}" target="_blank">Read more</a></p>
                     `;
                     articlesContainer.appendChild(articleElement);
@@ -76,7 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button class="note-btn" data-title="${article.title}">✏️</button>
                         </div>
                         ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}">` : ''}
-                        <p>${article.description}</p>
+                        <p class="description">${article.description}</p>
+                        <p class="meta">
+                            <strong>Source:</strong> ${article.source.name}<br>
+                            <strong>Author:</strong> ${article.author}<br>
+                            <strong>Published At:</strong> ${article.publishedAt}
+                        </p>
                         <p><a href="${article.url}" target="_blank">Read more</a></p>
                     `;
                     articlesContainer.appendChild(articleElement);

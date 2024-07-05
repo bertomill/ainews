@@ -5,6 +5,7 @@ import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 import sqlite3
+from datetime import datetime
 
 # Load environment variables from .env file if it exists
 load_dotenv()
@@ -43,7 +44,13 @@ def home():
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
-        valid_articles = [article for article in articles if article.get('title') and article.get('description')]
+        valid_articles = [
+            {
+                **article,
+                'publishedAt': datetime.strptime(article['publishedAt'], '%Y-%m-%dT%H:%M:%SZ').strftime('%B %d, %Y') if article.get('publishedAt') else 'Unknown date'
+            }
+            for article in articles if article.get('title') and article.get('description') and article.get('title') != '[Removed]' and article.get('description') != '[Removed]'
+        ]
 
         # Log the number of valid articles fetched
         logger.info("Number of valid articles fetched: %d", len(valid_articles))
@@ -95,7 +102,7 @@ def get_articles():
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
-        return jsonify([article for article in articles if article.get('title') and article.get('description')])
+        return jsonify([article for article in articles if article.get('title') and article.get('description') and article.get('title') != '[Removed]' and article.get('description') != '[Removed]'])
     except requests.RequestException as e:
         logger.error("Error fetching articles: %s", e)
         return jsonify({"error": "An error occurred while fetching articles"}), 500
@@ -108,7 +115,7 @@ def search_articles():
         response = requests.get(url)
         response.raise_for_status()
         articles = response.json().get('articles', [])
-        return jsonify([article for article in articles if article.get('title') and article.get('description')])
+        return jsonify([article for article in articles if article.get('title') and article.get('description') and article.get('title') != '[Removed]' and article.get('description') != '[Removed]'])
     except requests.RequestException as e:
         logger.error("Error searching articles: %s", e)
         return jsonify({"error": "An error occurred while searching for articles"}), 500

@@ -1,112 +1,150 @@
-markdown
-Copy code
-# AI Lense
+# AI Lens
 
-AI Lense is a web application that provides AI news and insights. The site allows business leaders to get a close eye on the emerging trends in AI. Users can chat with an AI assistant, take notes on articles, and view all their notes in one place.
+AI Lens is a web application that fetches and displays the latest news articles related to AI from various sources. Users can search for specific topics, view articles, and take notes on individual articles. The application is built with Flask for the backend and uses JavaScript for dynamic frontend interactions.
 
 ## Table of Contents
 
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Styles](#styles)
-- [Contributing](#contributing)
-- [License](#license)
+- [File Structure](#file-structure)
+- [API Endpoints](#api-endpoints)
+- [Frontend Functionality](#frontend-functionality)
+- [Environment Variables](#environment-variables)
+- [Notes](#notes)
 
 ## Features
 
-- **Chat with AI**: Users can interact with an AI to get responses to their queries.
-- **AI News Summary**: Summarize all AI news from the day with the click of a button.
-- **Take Notes**: Users can take notes on articles and view them later.
-- **Responsive Design**: The application is designed to be mobile-friendly.
+- Fetch and display AI-related news articles.
+- Search for articles by topic or query.
+- Take and save notes on individual articles.
+- Responsive design with a sidebar for navigation.
 
 ## Installation
 
-### Prerequisites
+1. **Clone the repository**:
+    ```sh
+    git clone <repository-url>
+    cd ai-lens
+    ```
 
-- Python 3.7+
-- Flask
-- OpenAI API Key
-- NewsAPI Key
+2. **Set up a virtual environment**:
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
 
-### Clone the Repository
+3. **Install the dependencies**:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-```bash
-git clone <repository-url>
-cd <repository-directory>
-Set Up Environment Variables
-Create a .env file in the root of your project and add your API keys:
+4. **Set up environment variables**:
+    Create a `.env` file in the root directory and add your API keys:
+    ```
+    NEWS_API_KEY=your_news_api_key
+    OPENAI_API_KEY=your_openai_api_key
+    ```
 
-env
+5. **Run the application**:
+    ```sh
+    flask run
+    ```
+
+## Usage
+
+- Open your browser and navigate to `http://127.0.0.1:5000/`.
+- Use the sidebar to navigate between different topics.
+- Use the search bar to find articles by keywords.
+- Click on the pencil icon to take notes on an article.
+- View and manage your notes in the "View Notes" section.
+
+## File Structure
+
+.
+├── app.py
+├── database_setup.py
+├── requirements.txt
+├── static
+│ ├── assistant.css
+│ ├── navbar.css
+│ ├── sidebar.css
+│ ├── style.css
+│ ├── app.js
+├── templates
+│ ├── ai_assistant.html
+│ ├── header.html
+│ ├── index.html
+│ ├── notes.html
+├── notes.db
+├── .env
+├── .gitignore
+└── README.md
+
+perl
 Copy code
+
+## API Endpoints
+
+### `GET /`
+
+Fetches and displays the latest AI-related news articles on the homepage.
+
+### `POST /chat`
+
+Handles chat requests to the OpenAI API.
+
+### `POST /save_note`
+
+Saves a note to the SQLite database.
+
+### `GET /notes`
+
+Displays all saved notes.
+
+### `GET /api/articles`
+
+Fetches articles by a specific topic.
+
+### `GET /api/search`
+
+Searches for articles by a specific query.
+
+## Frontend Functionality
+
+- **app.js**:
+  - `fetchNotes()`: Fetches and displays saved notes.
+  - `fetchArticlesByTopic(topic)`: Fetches and displays articles by topic.
+  - `searchArticles()`: Searches for articles by query.
+  - `saveNote()`: Saves a note.
+  - `toggleNotes()`: Toggles the notes column visibility.
+  - `openNoteModal(title)`: Opens the note-taking modal.
+  - `closeNoteModal()`: Closes the note-taking modal.
+
+- **index.html**:
+  - Displays the articles in a grid layout.
+  - Includes a sidebar for navigation and search functionality.
+  - Incorporates a modal for taking notes.
+
+## Environment Variables
+
+- `NEWS_API_KEY`: Your API key for the News API.
+- `OPENAI_API_KEY`: Your API key for the OpenAI API.
+
+## Notes
+
+- Ensure the `.env` file contains valid API keys for the application to function correctly.
+- Articles with titles or descriptions marked as "[Removed]" will not be displayed.
+- The application uses the `date-fns` library for date formatting.
+
+## Example `.env` File
+
 NEWS_API_KEY=your_news_api_key
 OPENAI_API_KEY=your_openai_api_key
-Install Dependencies
-bash
-Copy code
-pip install -r requirements.txt
-Run the Application
-bash
-Copy code
-python app.py
-Usage
-Home Page
-The home page displays the latest AI news articles.
-Users can click on "Take Notes" to add notes to an article.
-The AI Assistant button is located at the bottom right corner.
-Sidebar
-The sidebar contains links to filter articles by topics such as AI, Machine Learning, Deep Learning, etc.
-There is a search bar to search for specific topics, locations, or sources.
-A button to view all notes is available at the bottom of the sidebar.
-AI Assistant
-The AI Assistant can be opened by clicking the button at the bottom right.
-Users can interact with the AI Assistant to get responses to their queries.
-The assistant is styled to have a black and gray theme.
-Notes
-Users can take notes on articles by clicking the note icon.
-All notes can be viewed by clicking "View Notes" in the sidebar.
-Notes pop up in a similar fashion to the AI Assistant.
-Project Structure
-plaintext
-Copy code
-AI-Lense/
-│
-├── static/
-│   ├── style.css
-│   ├── navbar.css
-│   ├── assistant.css
-│   ├── sidebar.css
-│   ├── chat.js
-│   └── note.js
-│
-├── templates/
-│   ├── index.html
-│   ├── ai_assistant.html
-│   └── note_assistant.html
-│
-├── app.py
-├── requirements.txt
-├── .env
-└── README.md
-Styles
-style.css
-Contains the main styling for the application including grid layout for articles.
 
-navbar.css
-Contains the styles for the navigation bar in the sidebar.
-
-assistant.css
-Contains the styles for the AI Assistant pop-out.
-
-sidebar.css
-Contains the styles for the sidebar, including links and search bar.
-
-
-rust
+csharp
 Copy code
 
-This README.md file should provide comprehensive documentation for your project, making it easier for others to understand the purpose, installation process, usage, project structure, and styling considerations.
+## License
 
-
-
+This project is licensed under the MIT License.
