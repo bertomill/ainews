@@ -4,12 +4,11 @@ import logging
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
-import json
 
 # Load environment variables from .env file if it exists
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
